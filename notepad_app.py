@@ -1,24 +1,57 @@
 from tkinter.filedialog import *
 import tkinter as tk
 from tkinter import *
+import os
+from tkinter import messagebox
 
-#notepad
-def saveFile():
-    new_file = asksaveasfile(mode='w',filetypes=[("text files",".txt")])
-    if new_file is None:
-        return
-    text = str(entry.get(1.0,END))
-    new_file.write(text)
-    new_file.close()
 
-def openFile():
-    file = askopenfile(mode="r",filetypes=[("text files,".txt)])
-    if file is not None:
-        content=file.read()
-    entry.insert(INSERT,content)
-
-def clearFile():
+#defining functions:
+#defining NEW
+def newfile():
+    global file
+    canvas.title('untitled - Notepad')
     entry.delete(1.0,END)
+
+#defining OPEN:
+def openfile():
+    global file
+    file=askopenfilename(defaultextension='.txt', filetypes = [('text documents', '*.txt')])
+    if file == " ":
+        file= None
+
+    else:
+        canvas.title(os.basename(file) + ' -notepad')
+        f = open(file, 'r')
+        entry.insert(1.0, f.read())
+        f.close()
+
+#defining save
+def savefile():
+    global file
+    file= asksaveasfilename(defaultextension='.txt', filetypes=[('All files','*.*'), ('text Document','*.txt')])
+    if file == ' ':
+            file = None
+    else:
+        f= open(file, 'w')
+        f.write(entry.get(1.0, END))
+        f.close()
+#defining exit
+def exitfile():
+    canvas.destroy()
+
+
+def cut():
+    entry.event_generate(("<<Cut>>"))
+
+def copy():
+    entry.event_generate(("<<Copy>>"))
+
+def paste():
+    entry.event_generate(("<<Paste>>"))
+
+
+def about_us():
+    messagebox.showinfo('About us', 'This is a Python based notepad created with the help of tkinter library by Manasvi Priya')
 
 
 
@@ -36,32 +69,23 @@ menubar = Menu(canvas)
 canvas.config(menu=menubar)
 
 file = Menu(menubar, tearoff=0)
-file.add_command(label='New')
-file.add_command(label='Save')
-file.add_command(label='Open')
+file.add_command(label='New', command= newfile)
+file.add_command(label='Save', command= savefile)
+file.add_command(label='Open', command=openfile)
 file.add_separator()
-file.add_command(label='Exit')
+file.add_command(label='Exit', command=exitfile)
 menubar.add_cascade(label='File',menu=file)
 
 
 edit = Menu(menubar, tearoff=0)
-edit.add_command(label='cut')
-edit.add_command(label='copy')
-edit.add_command(label='paste')
+edit.add_command(label='cut', command=cut)
+edit.add_command(label='copy', command=copy)
+edit.add_command(label='paste', command=paste)
 menubar.add_cascade(label='Edit',menu=edit)
 
-
 help = Menu(menubar, tearoff=0)
-help.add_command(label='Nothing')
-menubar.add_cascade(label='Help',menu=help)
-
-about = Menu(menubar, tearoff=0)
-about.add_command(label='Author')
-menubar.add_cascade(label='About me', menu=about)
-
-
-
-
+help.add_command(label="About Us", command=about_us)
+menubar.add_cascade(label='Help', menu=help) 
 
 
 '''b1= Button(canvas,text='Open',bg='white',command=openFile)
