@@ -20,7 +20,7 @@ def openfile():
         file= None
 
     else:
-        canvas.title(os.basename(file) + ' -notepad')
+        canvas.title(os.path.basename(file) + ' -notepad')
         f = open(file, 'r')
         entry.insert(1.0, f.read())
         f.close()
